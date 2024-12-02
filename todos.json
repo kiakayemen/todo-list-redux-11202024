@@ -1,0 +1,44 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "task": "Buy groceries"
+    },
+    {
+      "id": "2",
+      "task": "Finish project report"
+    },
+    {
+      "id": "3",
+      "task": "Call mom"
+    },
+    {
+      "id": "4",
+      "task": "Schedule dentist appointment"
+    },
+    {
+      "id": "5",
+      "task": "Clean the house"
+    },
+    {
+      "id": "6",
+      "task": "Finish reading book"
+    },
+    {
+      "id": "7",
+      "task": "Reply to work emails"
+    },
+    {
+      "id": "8",
+      "task": "Pick up laundry"
+    },
+    {
+      "id": "9",
+      "task": "Plan weekend getaway"
+    },
+    {
+      "id": "ba0b",
+      "task": "Attend Yoga Class"
+    }
+  ]
+}
