@@ -87,50 +87,6 @@ export default function TodoList() {
           ) : null}
         </ul>{" "}
       </div>
-
-      {/* <div className="flex flex-col min-w-[500px]">
-        <div className="flex justify-between mb-10">
-          <input
-            className="rounded-xl py-1 px-4 min-w-[300px]"
-            value={state.newTodoText}
-            onChange={(e) => {
-              dispatch({
-                type: "HANDLE_INPUT_CHANGE",
-                payload: e.target.value,
-              });
-            }}
-            placeholder="Add New Todo"
-            type="text"
-            onKeyDown={handleKeyPress}
-            <button
-            disabled={state.newTodoText.trim() === ""}
-            className=""
-            />
-            onClick={addToDo}
-          >
-            Add
-          </button>
-        </div>
-        <ul>
-          {state.works.map((work) => {
-            return (
-              <li
-                className="list-none flex justify-between items-center py-2"
-                key={work.id}
-              >
-                <p>{work.task}</p>
-                <button
-                  onClick={() => {
-                    deleteToDo(work.id, work.task);
-                  }}
-                >
-                  ❌
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div> */}
     </>
   );
 }
