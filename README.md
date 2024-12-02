@@ -1,5 +1,5 @@
-# React + Vite
-Todo list with mock server using json-server, axios and React
+# React + Vite + Redux
+Todo list with mock server using json-server, Redux RTK Query and React
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
