@@ -2,10 +2,12 @@ import {
   useGetTodosQuery,
   useDeleteTodoMutation,
   useAddTodoMutation,
+  useEditTodoMutation,
 } from "../utils/slices/todosApi";
 
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useTransition, animated } from "@react-spring/web";
 
 export default function TodoList() {
   const [newTodoText, setNewTodoText] = useState("");
@@ -20,21 +22,66 @@ export default function TodoList() {
 
   // function to add a new todo
   const [addTodo] = useAddTodoMutation();
-  const handleAddTodo = () => {
-    addTodo({
-      task: newTodoText,
-    });
-    setNewTodoText("");
+  const handleAddTodo = async () => {
+    try {
+      await addTodo({
+        task: newTodoText,
+      }).unwrap;
+      toast.success("new todo added!");
+      setNewTodoText("");
+    } catch {
+      toast.error("failed to add todo!");
+    }
   };
 
   //function to delete a todo
-  const [deleteTodo] = useDeleteTodoMutation();
 
+  const [deleteTodo] = useDeleteTodoMutation();
   const handleKeyPress = (event) => {
     if (event.key === "Enter" && newTodoText.trim() !== "") {
-      handleAddTodo();
+      editingTodoId ? handleSaveEdit() : handleAddTodo();
     }
   };
+
+  // Transition for fade-out animation
+  const transitions = useTransition(todos || [], {
+    from: { opacity: 0, transform: "translateY(-10px)" },
+    enter: { opacity: 1, transform: "translateY(0)" },
+    leave: { opacity: 0, transform: "translateY(10px)" },
+    keys: (todo) => todo.id, // Use a unique key for each transition
+  });
+
+  // edit todo mutation
+  const [editTodo] = useEditTodoMutation();
+  const handleSaveEdit = async () => {
+    try {
+      await editTodo({
+        id: editingTodoId,
+        task: newTodoText,
+      }).unwrap();
+      toast.success("todo updated!");
+      setNewTodoText("");
+      setEditingTodoId(null);
+    } catch {
+      toast.error("error saving the edited todo!");
+    }
+  };
+
+  // enter edit mode
+
+  const handleEditTodo = (todo) => {
+    setNewTodoText(todo.task);
+    setEditingTodoId(todo.id);
+  };
+
+  // cancel edit mode
+
+  const handleCancelEditTodo = () => {
+    setNewTodoText("");
+    setEditingTodoId(null);
+  };
+
+  const [editingTodoId, setEditingTodoId] = useState(null);
 
   return (
     <>
@@ -49,38 +96,43 @@ export default function TodoList() {
             type="text"
             onKeyDown={handleKeyPress}
           />
+          {editingTodoId && (
+            <button onClick={handleCancelEditTodo}>Cancel</button>
+          )}
           <button
             disabled={newTodoText.trim() === ""}
             className=""
-            onClick={handleAddTodo}
+            onClick={editingTodoId ? handleSaveEdit : handleAddTodo}
           >
-            Add
+            {editingTodoId ? "Save" : "Add"}
           </button>
         </div>
         <ul>
           {isLoading ? (
             <h3>Loading...</h3>
-          ) : isSuccess ? (
-            todos.map((todo) => (
-              <li
-                className="list-none flex justify-between items-center py-2"
+          ) : isSuccess && todos ? (
+            transitions((style, todo) => (
+              <animated.li
                 key={todo.id}
+                style={style}
+                className="list-none flex justify-between items-center py-2"
               >
                 <p>{todo.task}</p>
-                <button
-                  onClick={() => {
-                    try {
-                      deleteTodo({ id: todo.id });
-                      toast.success(`successfully deleted "${todo.task}" 👍`)
-                    } catch (error) {
-                      toast.error("error deleting");
-                      console.log(error)
-                    }
-                  }}
-                >
-                  ❌
-                </button>
-              </li> // Added parentheses here for returning the `li`
+                <div className="flex gap-4">
+                  <button onClick={() => handleEditTodo(todo.id)}>✏️</button>
+                  <button onClick={() => {
+                        try {
+                          deleteTodo({ id: todo.id });
+                          toast.success(`successfully deleted "${todo.task}" 👍`);
+                        } catch (error) {
+                          toast.error("error deleting");
+                          console.log(error);
+                        }
+                      }}>
+                    ❌
+                  </button>
+                </div>
+              </animated.li>
             ))
           ) : isError ? (
             <h3>There was an error: {error}</h3>

@@ -7,7 +7,7 @@ export const todosApi = createApi({
     endpoints: (builder) => ({
         getTodos: builder.query({
             query: () => "/todos",
-            transformResponse: res => res.sort((a,b) => b.id - a.id),
+            // transformResponse: res => res.sort((a,b) => b.id - a.id),
             providesTags: ['Todos']
         }),
         addTodo: builder.mutation({
@@ -24,11 +24,21 @@ export const todosApi = createApi({
                 method:'DELETE',
             }),
             invalidatesTags:['Todos']
+        }),
+
+        editTodo: builder.mutation({
+            query: ({ id, task }) => ({
+                url: `todos/${id}`,
+                method: 'PATCH',
+                body: {task}
+            }),
+            invalidatesTags:['Todos']
         })
     })
 })
 export const {
     useGetTodosQuery,
     useDeleteTodoMutation,
-    useAddTodoMutation
+    useAddTodoMutation,
+    useEditTodoMutation
 } = todosApi
