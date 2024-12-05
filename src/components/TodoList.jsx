@@ -45,9 +45,9 @@ export default function TodoList() {
 
   // Transition for fade-out animation
   const transitions = useTransition(todos || [], {
-    from: { opacity: 0, transform: "translateY(-10px)" },
-    enter: { opacity: 1, transform: "translateY(0)" },
-    leave: { opacity: 0, transform: "translateY(10px)" },
+    from: { opacity: 0, transform: "translateX(-20px)" },
+    enter: { opacity: 1, transform: "translateX(0)" },
+    leave: { opacity: 0, transform: "translateX(20px)" },
     keys: (todo) => todo.id, // Use a unique key for each transition
   });
 
@@ -119,7 +119,7 @@ export default function TodoList() {
               >
                 <p>{todo.task}</p>
                 <div className="flex gap-4">
-                  <button onClick={() => handleEditTodo(todo.id)}>✏️</button>
+                  <button onClick={() => handleEditTodo(todo)}>✏️</button>
                   <button onClick={() => {
                         try {
                           deleteTodo({ id: todo.id });
